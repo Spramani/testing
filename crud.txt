@@ -1,0 +1,276 @@
+1.crResource project
+
+	properties set/--     source 1.8
+				run   payara server
+	
+	create a persistence.xml:
+			select database connection 
+			table generation strate : none
+		source/-floder
+			<non-jta-data-source>jdbc/pipool</non-jta-data-source>
+		
+			comment/- propertiy		
+
+	source packages/----
+		
+		1.create entity classes form databases
+			User.java(entity name)
+
+		2.service package in resourceService.java(u can change name)
+			 
+            @Inject User st;
+            EntityManager em = Persistence.createntityManagerFActory("resourcePU").createEntityManager();
+
+            @GET
+            @Produces(MediaType.APPLICATION_JSON)
+            public colleciton<User> get(){
+                    return em.createNamedQuary("USer,findAll").getResult();
+            }
+
+            @POST
+            @Consumes(MediaType.APPLICATION_JSON)
+            public void insertuser(USer usa){
+                em.getTransaction().begin();
+                User us = new USer();
+                us.setName(usa.getName());
+                us.setCity(usa.getCity());
+            em.persist(us);
+            em.getTransaction().commit();
+            }
+
+                
+            @DELETE
+            @Path("{id}")
+            @Consumes(MediaType.APPLICATION_JSON)
+            public void deleteuser(@PathParam("id")int id){
+                em.getTransaction().begin();
+                em.remove(em.find(User.class, id));
+                em.getTransaction().commit();
+        
+            }
+            
+            
+            @PUT
+            @Path("{id}")
+            @Consumes(MediaType.APPLICATION_JSON)
+            public void update(@PathParam("id")int id,User usa){
+            em.getTransaction().begin();
+                User us = em.find(User.class,usa.getId());
+            
+                us.setName(usa.getName());
+                us.setCity(usa.getCity());
+                em.merge(us);
+                em.getTransaction().commit();
+            }
+        3.create java interface/- resourceinterface.java
+
+                    @RegisterRestClient(baseUri = "http://localhost:8080/crResources/rest/resource")
+
+                    public interface resourceInterface {
+    
+                        @GET 
+                        @Produces(MediaType.APPLICATION_JSON)
+                        public Collection<User> get();
+                        
+                        @POST
+                        @Consumes(MediaType.APPLICATION_JSON)
+                        public void insertuser(User us);
+                        
+                        @DELETE
+                        @Path("{id}")
+                        @Consumes(MediaType.APPLICATION_JSON)
+                        public void deleteuser(@PathParam("id")int id);
+                        
+                        @PUT
+                        @Path("{id}")
+                        @Consumes(MediaType.APPLICATION_JSON)
+                        public void update(@PathParam("id")int id,User usa);
+                    }
+
+
+
+2. crClient
+
+    properties set/--  
+                source 1.8
+				run   payara server
+                framework 
+                    facelate
+                    *.jsf
+
+    source pagkage/-
+            entity package 
+                (copy entity file) 
+
+             create package /
+                     create java interface(copy)
+
+                            
+                       @RegisterRestClient(baseUri = "http://localhost:8080/crResources/rest/resource")
+                    
+                        @GET 
+                        @Produces(MediaType.APPLICATION_JSON)
+                        public Collection<User> get();
+                        
+                        @POST
+                        @Consumes(MediaType.APPLICATION_JSON)
+                        public void insertuser(User us);
+                        
+                        @DELETE
+                        @Path("{id}")
+                        @Consumes(MediaType.APPLICATION_JSON)
+                        public void deleteuser(@PathParam("id")int id);
+                        
+                        @PUT
+                        @Path("{id}")
+                        @Consumes(MediaType.APPLICATION_JSON)
+                        public void update(@PathParam("id")int id,User usa);
+
+            create jsf CDI Bean /--
+
+                                    
+                @Inject @RestClient RemoteClient rc;
+                Collection<User> userdata;
+
+                int id;
+                String name;
+                String city;
+                        {getter adn setter}
+
+                  public void adduser(){
+                        User us = new User();
+                        us.setName(name);
+                        us.setCity(city);
+                        
+                        rc.insertuser(us);
+                    }
+
+                    public String updateuser(int id,User us){
+                        this.id = id;
+                        name = us.getName();
+                        city = us.getCity();
+                        
+                        return "edit.jsf";
+                    }
+                    
+                    public String change(){
+                    User us = new User();
+                        us.setId(id);
+                        us.setName(name);
+                        us.setCity(city);
+                        rc.update(id, us);
+                        return "index.jsf";
+                    }
+                    
+                    public void delete(int id){
+                        rc.deleteuser(id);
+                    }     
+
+
+    index.xhtml:/-
+            add two file manual
+             xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+             xmlns:f="http://xmlns.jcp.org/jsf/core"
+                    
+                <?xml version='1.0' encoding='UTF-8' ?>
+                <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+                <html xmlns="http://www.w3.org/1999/xhtml"
+                    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                    xmlns:f="http://xmlns.jcp.org/jsf/core"
+                    xmlns:h="http://xmlns.jcp.org/jsf/html">
+                    <h:head>
+                        <title>Facelet Title</title>
+                    </h:head>
+                    <h:body>
+                        <div>
+                        
+                        <h:form>
+                        <center>
+                            <table border="3">
+                            <tr>
+                                <th>id</th>
+                                <th>name</th>
+                                <th>city</th>
+                                <th>update</th>
+                                <th>delete</th>
+                            </tr>
+                            <ui:repeat value="#{resourceBean.userdata}" var="use">
+                                <tr>
+                                    <td>#{use.id}</td>
+                                    <td>#{use.name}</td>
+                                    <td>#{use.city}</td>
+                                    <td><h:commandButton immediate="true" action="#{resourceBean.updateuser(use.id,use)}" value="update"/></td>
+                                    <td><h:commandButton immediate="true" action="#{resourceBean.delete(use.id)}" value="Delete"/></td>
+                                    
+                                </tr>
+                            </ui:repeat>
+                        </table>
+                        </center>
+                    
+                        <table>
+                            <tr>
+                                <th>Name</th>
+                                <td>        <h:inputText id="txtname"  value="#{resourceBean.name}" ></h:inputText>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>City</th>
+                                <td>        <h:inputText id="txtcity"  value="#{resourceBean.city}" ></h:inputText>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:commandButton actionListener="#{resourceBean.adduser()}" value="submit"/>
+                        </td>
+                            </tr>
+                        </table>
+                            </h:form>
+                    </div>
+                    </h:body>
+                </html>
+
+
+    edit.xhtml:/-
+
+                        <?xml version='1.0' encoding='UTF-8' ?>
+                <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+                <html xmlns="http://www.w3.org/1999/xhtml"
+                    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                    xmlns:f="http://xmlns.jcp.org/jsf/core"
+                    xmlns:h="http://xmlns.jcp.org/jsf/html">
+                    <h:head>
+                        <title>edit page</title>
+                    </h:head>
+                    <h:body>
+                        <div>
+                        
+                        <h:form>
+
+                        <table>
+                            <tr>
+                                <th>Name</th>
+                                <td>      
+                                    <h:inputHidden id="dataid" value="#{resourceBean.id}"></h:inputHidden>
+                                    
+                                    <h:inputText id="txtname"  value="#{resourceBean.name}" ></h:inputText>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>City</th>
+                                <td>        <h:inputText id="txtcity"  value="#{resourceBean.city}" ></h:inputText>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:commandButton actionListener="#{resourceBean.change()}" value="Update"/>
+                        </td>
+                            </tr>
+                        </table>
+                            </h:form>
+                    </div>
+                    </h:body>
+                </html>
+
+
+
+

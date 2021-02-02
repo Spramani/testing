@@ -1,0 +1,83 @@
+JWT Tokwn Step:-
+
+		properties in 
+			
+			sources/--
+				1.8
+			run/---
+				payara server
+
+
+1.Resources:-
+
+		otherSources/src/----
+
+				publickey.pem
+			
+			Add properties file:
+				accepted.issuer=https://server.example.com
+				
+
+
+		Sources Packages/-----
+		    config/--------		
+			
+			BootStrap.java/--------
+					
+				@DeclareRoles({"Admin","User"})
+				@LoginConfig(authMethod = "MP-JWT")	
+	
+		    service/------
+			Example.java/---u
+			
+				@RolesAllowed("User")
+				@Produce(MediaType.TEXT_PLAIN)				 
+
+2.Clients:-
+	  
+	Sources packages-----
+		create new java package "token"
+			paste token files in that new created package
+
+	projectfiles -----
+		pom.xml
+			<dependency>
+				<groupId>io.vertx</groupId>
+				<artifactId>vertx-auth-jwt</artifactId>
+				<version>3.8.1</version>
+			</dependency>
+			
+			
+	GenrateToken.java-----
+		in genreteJWT function
+			subject = "Trax";
+			groups = new ArrayList<String>();
+			groups.add("User");
+ 
+	otherSources/src/----
+
+				private.pem
+
+	sources/--
+		interface/---
+			newif.java
+				@RegisterRestClient(baseUri = "http://localhost:8080/egResources/rest/example")	
+				
+				public interface newif {
+					@GET
+					@ClientHeaderParam(name="authorization", value="{generateToken}")
+					@Produce(MediaType.TEXT_PLAIN)
+					public Response get();
+				
+					default String generateToken(){
+						return "Bearer "+GenerateToken.generateJWT();
+					}
+				}
+			
+
+		servlet/----
+			servlet/--
+				@Inject @RestClient newif nf;
+		
+
+				out.println(nf.generateToken());
