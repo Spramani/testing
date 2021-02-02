@@ -1,0 +1,5 @@
+com\mycompany\egresources\config\CrossOriginResourceSharingFilter.class
+com\mycompany\egresources\config\Producers.class
+com\mycompany\egresources\config\BootStrap.class
+com\mycompany\egresources\service\ExampleService.class
+com\mycompany\egresources\service\HealthCheckService.class

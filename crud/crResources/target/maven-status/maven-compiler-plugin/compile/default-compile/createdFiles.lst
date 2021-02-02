@@ -1,0 +1,8 @@
+com\mycompany\crresources\service\resourceService.class
+com\mycompany\crresources\Entitiy\User.class
+com\mycompany\crresources\Entitiy\User_.class
+com\mycompany\crresources\Client\resourceInterface.class
+com\mycompany\crresources\config\CrossOriginResourceSharingFilter.class
+com\mycompany\crresources\config\Producers.class
+com\mycompany\crresources\service\HealthCheckService.class
+com\mycompany\crresources\config\BootStrap.class

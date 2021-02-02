@@ -1,0 +1,8 @@
+com\mycompany\crclient\service\HealthCheckService.class
+entity\User.class
+com\mycompany\crclient\config\CrossOriginResourceSharingFilter.class
+com\mycompany\crclient\config\Producers.class
+client\RemoteClient.class
+com\mycompany\crclient\config\BootStrap.class
+com\mycompany\crclient\bean\resourceBean.class
+com\mycompany\crclient\service\ExampleService.class

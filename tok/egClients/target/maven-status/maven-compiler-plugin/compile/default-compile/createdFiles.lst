@@ -1,0 +1,9 @@
+com\mycompany\egclients\config\CrossOriginResourceSharingFilter.class
+com\mycompany\egclients\config\Producers.class
+com\mycompany\egclients\service\HealthCheckService.class
+token\MPJWTToken.class
+token\GenerateToken.class
+com\mycompany\egclients\service\ExampleService.class
+servlet\servlet.class
+com\mycompany\egclients\config\BootStrap.class
+Clientinterface\newIF.class
