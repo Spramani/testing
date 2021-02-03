@@ -1,3 +1,0 @@
-#!/bin/sh
-mvn clean package && docker build -t shubhamdockerhub/egResources .
-docker rm -f egResources 2>/dev/null || true && docker run -it --name egResources -p 8080:8080 -p 4848:4848 -p 8181:8181 --name egResources shubhamdockerhub/egResources

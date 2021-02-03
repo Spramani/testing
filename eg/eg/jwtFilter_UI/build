@@ -1,3 +1,0 @@
-#!/bin/sh
-mvn clean package
-docker build -t vrushabh40/jwtFilter_UI .

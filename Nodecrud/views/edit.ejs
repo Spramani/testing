@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+      <form method="POST" action="/updatedata?id=<%= data._id %>">
+        <table >
+            <tr>
+                <td>name</td>
+                <td><input type="text" name="sname" id="" value="<%= data.name %>" /></td>
+            </tr>
+            <tr>
+                <td>address</td>
+                <td><input type="text" name="address" id="" value="<%= data.address %>" /></td>
+            </tr>
+            <tr>
+                <td>city</td>
+                <td><input type="text" name="city" id="" value="<%= data.city %>" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="submit" name="submit" /></td>
+            </tr>
+        </table>
+      </form>
+</body>
+</html>
