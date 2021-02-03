@@ -1,0 +1,265 @@
+#importing dataset for data analysis and data wranging
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns
+
+import statsmodels.api as sm
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+
+#Read the data
+data= pd.read_excel(r"C:\Users\Tushar\OneDrive\Documents\petrol_consumption.xlsx")
+data
+
+
+# head() prints bydefault starting 5 values
+print(data.head())  
+
+# tail() prints bydefault ending 5 values
+print(data.tail()) 
+
+
+#prints no.of rows & columns in a dataset
+print(data.shape)  
+
+#Statistical information
+data.info()
+
+#Statistical information, here transpose() is used for moving the rows data to the column and columns data to the rows. 
+data.describe().transpose()
+
+
+# std() - used to compute the standard deviation along the specified axis. This function returns the standard deviation of the array elements.
+data.std()
+
+
+#checking the null values
+data.isna().sum()
+
+
+
+#Preprocessing the data
+from sklearn import preprocessing
+d=preprocessing.normalize(data)
+d1=pd.DataFrame(d)
+d1
+
+#Correlation is used to test relationships between quantitative variables or categorical variables.
+data.corr()
+
+
+Bar plot
+x=data["Average_income"]
+y=data["Paved_Highways"]
+
+xi = list(range(len(x)))
+
+plt.bar(xi,y, color="purple")
+
+plt.title("Bar Plot of Average_income vs Paved_Highways ")
+plt.xlabel("Average_income")
+plt.ylabel('Paved_Highways')
+plt.show()
+
+
+#Scatter plot
+plt.scatter(data["Petrol_tax"], data["Paved_Highways"], color="purple")
+
+plt.title("Scatter Plot of Petrol_tax vs Paved_Highways ")
+plt.xlabel("Petrol_tax")
+plt.ylabel("Paved_Highways")
+plt.show()
+
+#saving the figure
+plt.savefig("ScatterPlot.png")
+
+
+# Barplot
+x=data["Petrol_tax"]
+y=data["Paved_Highways"]
+sns.set()
+a = sns.barplot(x,y)
+
+
+#Splitting data, here axis=1 means it's for Column.
+X=data.drop(['Petrol_Consumption'],axis=1)
+X
+
+
+Y=data.Petrol_Consumption
+Y
+
+
+# Modelling, Fitting
+# We're doing Muliti-Linear Regression for the better result.
+
+# Importing required libraries for LinearRegression & Learning Curve.
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import learning_curve
+
+#splitting the dataset into 80% training and 20% testing
+X_train,X_test,Y_train,Y_test=train_test_split(X,Y, test_size=0.2)
+
+
+model = LinearRegression().fit(X_train, Y_train)
+
+#Intercept
+print('Intercept :', model.intercept_)
+
+#Slope - Cocoeffint
+print('Slope :', model.coef_)
+
+
+print("Determination of Coefficient :", model.score(X_train, Y_train))
+#We got our model accuracy = 0.6873
+
+pred = model.predict(X)
+pred
+
+data["PetrolConsumption_Prediction"] = pred
+data
+
+
+
+# Learning Curve :- learning curves show how the training and validation errors change with respect to the number of training examples used while training a machine learning model.
+
+
+train_sizes, train_scores, test_scores = learning_curve(LinearRegression(),X,Y, train_sizes=np.linspace(.1, 1.0, 5), verbose=0)
+
+train_scores_mean = np.mean(train_scores, axis=1)
+train_scores_std = np.std(train_scores, axis=1)
+test_scores_mean = np.mean(test_scores, axis=1)
+test_scores_std = np.std(test_scores, axis=1)
+
+# Mean and Standard Deviation of training scores 
+mean_training = np.mean(train_scores, axis=1) 
+Standard_Deviation_training = np.std(train_scores, axis=1) 
+  
+# Mean and Standard Deviation of testing scores 
+mean_testing = np.mean(test_scores, axis=1) 
+Standard_Deviation_testing = np.std(test_scores, axis=1) 
+  
+# dotted blue line is for training scores and green line is for cross-validation score 
+plt.plot(train_sizes, mean_training, '--', color="b",  label="Training score") 
+plt.plot(train_sizes, mean_testing, color="g", label="Cross-validation score") 
+  
+# Drawing plot 
+plt.title("LEARNING CURVE FOR LR") 
+plt.xlabel("Training Set Size"), plt.ylabel("Accuracy Score"), plt.legend(loc="best") 
+plt.tight_layout() 
+plt.show()
+
+# statsmodels is a Python module that provides classes and functions for the estimation of many different statistical models, as well as for conducting statistical tests, and statistical data exploration. 
+import statsmodels.api as sm
+X = sm.add_constant(X) # adding a constant
+
+
+
+ 
+#Linear Regression, also called Ordinary Least-Squares (OLS) Regression, is probably the most commonly used technique in Statistical Learning.
+#Ordinary Least Squares is the simplest and most common estimator in which the two (beta)s are chosen to minimize the square of the distance between the predicted values and the actual values.
+model = sm.OLS(Y, X).fit()
+predictions = model.predict(X) 
+ 
+print_model = model.summary()  #The model summary table reports the strength of the relationship between the model and the dependent variable.
+print(print_model)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d1 = np.array(data)
+print(d1[1])
+
+
+#Statistical information
+data.info()
+
+type(data)
+
+#Statistical information
+data.describe()
+
+    data.std()
+
+#checking the null values
+data.isna().sum()
+
+#correlation
+data.corr()
+
+#Bar plot
+x=data["Average_income"]
+y=data["Paved_Highways"]
+plt.bar(x,y, color="Red")
+plt.title("Bar Plot")
+plt.xlabel("Average_income")
+plt.ylabel('Paved_Highways')
+plt.show()
+
+
+#Scatter plot
+plt.scatter(data["Average_income"], data["Paved_Highways"], color="purple")
+
+plt.title("Scatter Plot ")
+plt.xlabel("Average_income")
+plt.ylabel("Paved_Highways")
+plt.show()
+
+
+x=data["Average_income"]
+y=data["Paved_Highways"]
+sns.set()
+a = sns.barplot(x,y)
+
+
+
+#Splitting data
+X=data.drop(['Petrol_Consumption'],axis=1)
+X
+
+Y=data.Petrol_Consumption
+Y
+
+
+#Model
+#Multiple Linear regression model
+from sklearn.linear_model import LinearRegression
+
+model = LinearRegression().fit(X,Y)
+
+#Intercept
+print('Intercept :', model.intercept_)
+
+#Slope - Cocoeffint
+print('Slope :', model.coef_)
+
+print("Determination of Coefficient :", model.score(X,Y))
+
+
+ypred = model.predict(X)
+ypred
+
+data["Predcited_Value"] = ypred
+data
