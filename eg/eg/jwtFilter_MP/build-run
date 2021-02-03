@@ -1,0 +1,3 @@
+#!/bin/sh
+mvn clean package && docker build -t vrushabh40/jwtFilter_MP .
+docker rm -f jwtFilter_MP 2>/dev/null || true && docker run -it --name jwtFilter_MP -p 8080:8080 -p 4848:4848 -p 8181:8181 --name jwtFilter_MP vrushabh40/jwtFilter_MP
